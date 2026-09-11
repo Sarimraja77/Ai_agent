@@ -24,16 +24,23 @@ def get_product(name: str) -> str:
         return f"product not found. Available: {', '.join(PRODUCTS)}"
     return str(p)
 
+@tool
+def list_products() -> str:
+    """List all available products with their prices."""
+    lines = [f"{name}: ${info['Price']}" for name, info in PRODUCTS.items()]
+    return "\n".join(lines)
+
 @st.cache_resource
 def get_agent():
     llm = ChatGroq(model="openai/gpt-oss-120b", temperature=0)
     return create_agent(
         llm,
-        tools=[get_product],
+        tools=[get_product, list_products],
         system_prompt=(
             "You are a product assistant for an online tech store. "
             "Always call the get_product tool with the user's best-guess product name — "
             "do not ask the user to confirm the name before calling the tool. "
+            "If the user asks to see all products, or the full catalog, call the list_products tool. "
             "Only ask for clarification if the tool returns a 'not found' result."
         ),
     )
