@@ -7,12 +7,12 @@ from langchain.agents import create_agent
 load_dotenv()
 
 PRODUCTS = {
-    "Wireless": {"Price": 79.99,"Stock": 10 ,"rating": 4.5, "description": "Over-ear Bluetooth, 30-hr Battery, active noise cancellation."},
-    "smart-watch": {"Price": 199.99, "Stock": 5, "rating": 4.2, "description": "Tracks heart rate and sleep. 5-Day battery, water resistant."},
-    "Gaming-Keyboard": {"Price": 200.00, "Stock": 3, "rating": 4.7, "description": "Tenkey less, Cherry MX Brown, per key RGB."},
+    "Wireless": {"Price": 79.99, "Stock": 10, "rating": 4.5, "description": "Over-ear Bluetooth, 30-hr Battery, active noise cancellation."},
+    "smart watch": {"Price": 199.99, "Stock": 5, "rating": 4.2, "description": "Tracks heart rate and sleep. 5-Day battery, water resistant."},
+    "Gaming Keyboard": {"Price": 200.00, "Stock": 3, "rating": 4.7, "description": "Tenkey less, Cherry MX Brown, per key RGB."},
     "Speakers": {"Price": 249.99, "Stock": 7, "rating": 4.6, "description": "Best Audionic Speaker, Bass-Boost Sound, RGB-lights."},
-    "Mosquito-Killer": {"Price": 49.99, "Stock": 15, "rating": 4.9, "description": "UV light mosquito killer, 20m² coverage, quiet operation."},
-    "Electric Tyre Pump": {"Price": 149.99,"Stock": 6,"rating": 4.5, "description": "Portable Electric Tire Pump for cars, SUVs and motorcycles. Quickly inflate your tires with a convenient compact air compressor—ideal for emergencies, road trips and everyday driving in Saudi Arabia."}
+    "Mosquito Killer": {"Price": 49.99, "Stock": 15, "rating": 4.9, "description": "UV light mosquito killer, 20m² coverage, quiet operation."},
+    "Electric Tyre Pump": {"Price": 149.99, "Stock": 6, "rating": 4.5, "description": "Portable Electric Tire Pump for cars, SUVs and motorcycles. Quickly inflate your tires with a convenient compact air compressor — ideal for emergencies, road trips and everyday driving in Saudi Arabia."},
 }
 PRODUCTS_LOOKUP = {k.lower(): v for k, v in PRODUCTS.items()}
 
