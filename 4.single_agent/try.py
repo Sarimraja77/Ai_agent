@@ -12,6 +12,7 @@ PRODUCTS = {
     "Gaming-Keyboard": {"Price": 200.00, "Stock": 3, "rating": 4.7, "description": "Tenkey less, Cherry MX Brown, per key RGB."},
     "Speakers": {"Price": 249.99, "Stock": 7, "rating": 4.6, "description": "Best Audionic Speaker, Bass-Boost Sound, RGB-lights."},
     "Mosquito-Killer": {"Price": 49.99, "Stock": 15, "rating": 4.9, "description": "UV light mosquito killer, 20m² coverage, quiet operation."},
+    "Electric Tyre Pump": {"Price": 149.99,"Stock": 6,"rating": 4.5, "description": "Portable Electric Tire Pump for cars, SUVs and motorcycles. Quickly inflate your tires with a convenient compact air compressor—ideal for emergencies, road trips and everyday driving in Saudi Arabia."}
 }
 PRODUCTS_LOOKUP = {k.lower(): v for k, v in PRODUCTS.items()}
 
