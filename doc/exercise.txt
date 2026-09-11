@@ -1,0 +1,23 @@
+Project 1 Exercise: Shopping Agent
+====================================
+Memory and personalization:
+	(1) Order history summary — agent can answer "what have I ordered before?" by querying the orders table
+	(2) User preferences — remember that a user always prefers organic, or never wants items over $20, so they don't have to repeat it every session
+	
+Guardrails:
+	(1) Input guardrail — before the agent runs, check if the user's message is shopping-related. Reject off-topic requests ("write me a poem", "what's the weather") with a polite redirect.
+	
+Eval:
+	(1) Tool call accuracy eval — build a small test set of user queries with expected tool calls (e.g. "organic honey under $20" should always call search_products with is_organic=True, max_price=20). Assert the agent calls the right tools with the right parameters.
+	(2) Response quality eval — use an LLM-as-judge to score agent responses on: relevance, correctness (did it show the right products?), and format compliance (did it use the numbered list format?).
+	
+Project 2 Exercise: Telecom RAG Chatbot
+=========================================
+1. Add Source Citations
+Modify _format_docs() in rag_chain.py and the system prompt so the final answer explicitly cites which source (FAQ, ticket ID, or guide page number) each piece of information came from.
+	
+2. Confidence / Fallback Logic
+If no retrieved chunk scores above a similarity threshold, skip the LLM entirely and return a canned "I don't know, please call 611" message. Use similarity_search_with_score() instead of a plain retriever.	
+
+3. Evaluate Retrieval Quality
+Write a small evaluation script that tests 10 hand-crafted (question, expected_ticket_id) pairs. Measure top-k recall: was the correct ticket retrieved within the top 3 results?
