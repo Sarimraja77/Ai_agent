@@ -7,12 +7,14 @@ from langchain.agents import create_agent
 load_dotenv()
 
 PRODUCTS = {
-    "Wireless": {"Price": 79.99, "Stock": 10, "rating": 4.5, "description": "Over-ear Bluetooth, 30-hr Battery, active noise cancellation."},
-    "smart watch": {"Price": 199.99, "Stock": 5, "rating": 4.2, "description": "Tracks heart rate and sleep. 5-Day battery, water resistant."},
-    "Gaming Keyboard": {"Price": 200.00, "Stock": 3, "rating": 4.7, "description": "Tenkey less, Cherry MX Brown, per key RGB."},
+
+    "LED Photon Rejuvenation Face Mask": {"Price": 77.99, "Stock": 10, "rating": 4.5, "description": "The LED Photon Rejuvenation Face Mask is an advanced skincare device designed to improve skin health using LED light therapy. It helps rejuvenate the skin, reduce wrinkles, improve skin tone, and support collagen production. The mask features multiple LED light modes that target different skin concerns such as acne, aging, and dull skin. It comes with a remote control for easy operation and a comfortable wearable design for home beauty treatments."},
+    "2-in-1 Oil Dispenser with Silicone Brush": {"Price": 150.00 , "Stock": 5, "rating": 4.7, "description": "Upgrade your cooking with the 2-in-1 Oil Dispenser featuring a silicone brush and spray bottle. Perfect for BBQ, grilling, baking, roasting, and everyday cooking. Durable glass design, reusable, and easy to refill. Shop online with delivery across Saudi Arabia."},
+    "Automatic Fresh Juicer | Portable USB Citrus Juicer KSA": {"Price": 200.00, "Stock": 3, "rating": 4.7, "description": "Tenkey less, Cherry MX Brown, per key RGB."},
     "Speakers": {"Price": 249.99, "Stock": 7, "rating": 4.6, "description": "Best Audionic Speaker, Bass-Boost Sound, RGB-lights."},
     "Mosquito Killer": {"Price": 49.99, "Stock": 15, "rating": 4.9, "description": "UV light mosquito killer, 20m² coverage, quiet operation."},
     "Electric Tyre Pump": {"Price": 149.99, "Stock": 6, "rating": 4.5, "description": "Portable Electric Tire Pump for cars, SUVs and motorcycles. Quickly inflate your tires with a convenient compact air compressor — ideal for emergencies, road trips and everyday driving in Saudi Arabia."},
+
 }
 PRODUCTS_LOOKUP = {k.lower(): v for k, v in PRODUCTS.items()}
 
@@ -47,7 +49,7 @@ def get_agent():
 
 agent = get_agent()
 
-st.title("🛒 Tech Store Product Assistant")
+st.title("🛒 Nexgen Agent")
 
 if "history" not in st.session_state:
     st.session_state.history = []
