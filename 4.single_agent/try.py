@@ -100,23 +100,64 @@ def get_agent():
 
 agent = get_agent()
 
-st.title("🛒 Nexgen Agent")
+st.set_page_config(page_title="Nexgen Assistant", page_icon="🛒")
+
+st.markdown("""
+<style>
+    #MainMenu, footer, header {visibility: hidden;}
+    .block-container {padding-top: 1rem; padding-bottom: 1rem;}
+    .stChatMessage {
+        border-radius: 14px;
+        padding: 4px 10px;
+    }
+    div[data-testid="stChatMessageContent"] {
+        font-size: 14px;
+    }
+    .welcome-box {
+        background: linear-gradient(135deg, #1a1a2e, #16213e);
+        color: white;
+        padding: 16px;
+        border-radius: 12px;
+        margin-bottom: 14px;
+        text-align: center;
+    }
+    .welcome-box h3 {
+        margin: 0 0 4px 0;
+        font-size: 17px;
+    }
+    .welcome-box p {
+        margin: 0;
+        font-size: 13px;
+        opacity: 0.85;
+    }
+</style>
+""", unsafe_allow_html=True)
+
+st.markdown("""
+<div class="welcome-box">
+    <h3>🛒 Nexgen Assistant</h3>
+    <p>Ask me about prices, stock, or ratings — I'm here to help!</p>
+</div>
+""", unsafe_allow_html=True)
 
 if "history" not in st.session_state:
     st.session_state.history = []
 
 for msg in st.session_state.history:
-    with st.chat_message(msg["role"]):
+    avatar = "🧑" if msg["role"] == "user" else "🛒"
+    with st.chat_message(msg["role"], avatar=avatar):
         st.write(msg["content"])
 
 question = st.chat_input("Ask about our products...")
 if question:
     st.session_state.history.append({"role": "user", "content": question})
-    with st.chat_message("user"):
+    with st.chat_message("user", avatar="🧑"):
         st.write(question)
 
-    result = agent.invoke({"messages": st.session_state.history})
-    reply = result["messages"][-1].content
+    with st.spinner("Thinking..."):
+        result = agent.invoke({"messages": st.session_state.history})
+        reply = result["messages"][-1].content
+
     st.session_state.history.append({"role": "assistant", "content": reply})
-    with st.chat_message("assistant"):
+    with st.chat_message("assistant", avatar="🛒"):
         st.write(reply)
