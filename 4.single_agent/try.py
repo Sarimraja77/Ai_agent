@@ -28,6 +28,10 @@ def fetch_products():
                 currencyCode
               }
             }
+            totalInventory
+            rating: metafield(namespace: "custom", key: "rating") {
+              value
+            }
           }
         }
       }
@@ -45,9 +49,12 @@ def fetch_products():
         name = node["title"]
         price = node["priceRange"]["minVariantPrice"]["amount"]
         currency = node["priceRange"]["minVariantPrice"]["currencyCode"]
+        rating = node["rating"]["value"] if node["rating"] else "Not rated yet"
         products[name] = {
             "Price": price,
             "Currency": currency,
+            "Stock": node["totalInventory"],
+            "Rating": rating,
             "description": node["description"],
         }
     return products
@@ -68,9 +75,12 @@ def get_product(name: str) -> str:
 
 @tool
 def list_products() -> str:
-    """List all available products with their prices."""
+    """List all available products with their prices, stock and rating."""
     products = get_products()
-    lines = [f"{name}: {info['Price']} {info['Currency']}" for name, info in products.items()]
+    lines = [
+        f"{name}: {info['Price']} {info['Currency']} | Stock: {info['Stock']} | Rating: {info['Rating']}"
+        for name, info in products.items()
+    ]
     return "\n".join(lines)
 
 @st.cache_resource
