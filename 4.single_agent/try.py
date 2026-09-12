@@ -247,7 +247,7 @@ if question:
 
     with st.chat_message("assistant", avatar="🛒"):
         st.write(display_reply)
-                if match:
+        if match:
             variant_id, qty = match.group(1), match.group(2)
             components.html(f"""
                 <script>
