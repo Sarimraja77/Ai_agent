@@ -32,6 +32,13 @@ def fetch_products():
             rating: metafield(namespace: "custom", key: "rating") {
               value
             }
+            variants(first: 1) {
+              edges {
+                node {
+                  id
+                }
+              }
+            }
           }
         }
       }
@@ -50,12 +57,14 @@ def fetch_products():
         price = node["priceRange"]["minVariantPrice"]["amount"]
         currency = node["priceRange"]["minVariantPrice"]["currencyCode"]
         rating = node["rating"]["value"] if node["rating"] else "Not rated yet"
+        variant_id = node["variants"]["edges"][0]["node"]["id"] if node["variants"]["edges"] else None
         products[name] = {
             "Price": price,
             "Currency": currency,
             "Stock": node["totalInventory"],
             "Rating": rating,
             "description": node["description"],
+            "variant_id": variant_id,
         }
     return products
 
@@ -83,20 +92,69 @@ def list_products() -> str:
     ]
     return "\n".join(lines)
 
+def create_cart(variant_id, quantity=1):
+    """Create a Shopify cart with the given variant and return checkout URL."""
+    url = f"https://{STORE_DOMAIN}/api/2024-10/graphql.json"
+    mutation = """
+    mutation($variantId: ID!, $qty: Int!) {
+      cartCreate(input: {
+        lines: [{ merchandiseId: $variantId, quantity: $qty }]
+      }) {
+        cart {
+          id
+          checkoutUrl
+        }
+        userErrors {
+          field
+          message
+        }
+      }
+    }
+    """
+    variables = {"variantId": variant_id, "qty": quantity}
+    headers = {
+        "Content-Type": "application/json",
+        "X-Shopify-Storefront-Access-Token": STOREFRONT_TOKEN,
+    }
+    response = requests.post(url, json={"query": mutation, "variables": variables}, headers=headers)
+    return response.json()
+
+@tool
+def add_to_cart(product_name: str, quantity: int = 1) -> str:
+    """Add a product to the cart by name and return a checkout link. Use the exact product name from the catalog."""
+    products = get_products()
+    products_lookup = {k.lower(): v for k, v in products.items()}
+    p = products_lookup.get(product_name.lower())
+    if not p:
+        return f"Product not found. Available: {', '.join(products)}"
+    if not p.get("variant_id"):
+        return "Sorry, this product cannot be added to cart right now."
+
+    result = create_cart(p["variant_id"], quantity)
+    cart_data = result.get("data", {}).get("cartCreate", {})
+    errors = cart_data.get("userErrors", [])
+    if errors:
+        return f"Could not add to cart: {errors[0]['message']}"
+
+    checkout_url = cart_data["cart"]["checkoutUrl"]
+    return f"Added {quantity} x {product_name} to cart! Complete your order here: {checkout_url}"
+
 @st.cache_resource
 def get_agent():
     llm = ChatGroq(model="openai/gpt-oss-120b", temperature=0)
     return create_agent(
-        llm,
-        tools=[get_product, list_products],
-        system_prompt=(
-            "You are a product assistant for an online tech store. "
-            "Always call the get_product tool with the user's best-guess product name — "
-            "do not ask the user to confirm the name before calling the tool. "
-            "If the user asks to see all products, or the full catalog, call the list_products tool. "
-            "Only ask for clarification if the tool returns a 'not found' result."
-        ),
-    )
+    llm,
+    tools=[get_product, list_products, add_to_cart],
+    system_prompt=(
+        "You are a product assistant for an online tech store. "
+        "Always call the get_product tool with the user's best-guess product name — "
+        "do not ask the user to confirm the name before calling the tool. "
+        "If the user asks to see all products, or the full catalog, call the list_products tool. "
+        "If the user wants to add a product to their cart or buy it, call the add_to_cart tool "
+        "with the exact product name. Always share the checkout link you get back. "
+        "Only ask for clarification if a tool returns a 'not found' result."
+    ),
+)
 
 agent = get_agent()
 
