@@ -1,4 +1,6 @@
 import streamlit as st
+import streamlit.components.v1 as components
+import re
 import os
 import requests
 from dotenv import load_dotenv
@@ -137,7 +139,11 @@ def add_to_cart(product_name: str, quantity: int = 1) -> str:
         return f"Could not add to cart: {errors[0]['message']}"
 
     checkout_url = cart_data["cart"]["checkoutUrl"]
-    return f"Added {quantity} x {product_name} to cart! Complete your order here: {checkout_url}"
+    numeric_variant_id = p["variant_id"].split("/")[-1]
+
+    # Special marker so the UI layer knows to sync the site's real cart
+    marker = f"[[SYNC_CART:{numeric_variant_id}:{quantity}]]"
+    return f"Added {quantity} x {product_name} to cart! Complete your order here: {checkout_url} {marker}"
 
 @st.cache_resource
 def get_agent():
@@ -234,5 +240,21 @@ if question:
         reply = result["messages"][-1].content
 
     st.session_state.history.append({"role": "assistant", "content": reply})
+
+    # Check for cart-sync marker
+    match = re.search(r"\[\[SYNC_CART:(\d+):(\d+)\]\]", reply)
+    display_reply = re.sub(r"\[\[SYNC_CART:\d+:\d+\]\]", "", reply).strip()
+
     with st.chat_message("assistant", avatar="🛒"):
-        st.write(reply)
+        st.write(display_reply)
+        if match:
+            variant_id, qty = match.group(1), match.group(2)
+            components.html(f"""
+                <script>
+                window.parent.postMessage({{
+                    type: 'ADD_TO_SHOPIFY_CART',
+                    variantId: '{variant_id}',
+                    quantity: {qty}
+                }}, '*');
+                </script>
+            """, height=0)
