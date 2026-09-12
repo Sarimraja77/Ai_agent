@@ -251,7 +251,7 @@ if question:
             variant_id, qty = match.group(1), match.group(2)
             components.html(f"""
                 <script>
-                window.parent.postMessage({{
+                window.top.postMessage({{
                     type: 'ADD_TO_SHOPIFY_CART',
                     variantId: '{variant_id}',
                     quantity: {qty}
