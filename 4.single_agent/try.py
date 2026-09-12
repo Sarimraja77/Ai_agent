@@ -167,6 +167,8 @@ st.markdown("""
     .stChatMessage {
         border-radius: 14px;
         padding: 4px 10px;
+        max-width: 100%;
+        overflow-x: hidden;
     }
     div[data-testid="stChatMessageContent"] {
         font-size: 14px;
@@ -187,6 +189,21 @@ st.markdown("""
         margin: 0;
         font-size: 13px;
         opacity: 0.85;
+    }
+    .stChatMessage table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+        font-size: 12px;
+        max-width: 100%;
+    }
+    @media (max-width: 480px) {
+        .stChatMessage table {
+            font-size: 11px;
+        }
+        .stChatMessage table th, .stChatMessage table td {
+            padding: 4px 6px !important;
+        }
     }
 </style>
 """, unsafe_allow_html=True)
