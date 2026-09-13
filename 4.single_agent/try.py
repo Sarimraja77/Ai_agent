@@ -169,7 +169,14 @@ st.set_page_config(page_title="Nexgen Assistant", page_icon="🛒")
 st.markdown("""
 <style>
     #MainMenu, footer, header {visibility: hidden;}
+    div[class*="viewerBadge"] {
+        display: none !important;
+    }
+    a[href*="streamlit.io"] {
+        display: none !important;
+    }
     .block-container {padding-top: 1rem; padding-bottom: 1rem;}
+    
     .stChatMessage {
         border-radius: 14px;
         padding: 4px 10px;
@@ -251,7 +258,6 @@ if question:
             variant_id, qty = match.group(1), match.group(2)
             components.html(f"""
                 <script>
-                console.log('CART SYNC SCRIPT RUNNING', '{variant_id}', {qty});
                 window.top.postMessage({{
                     type: 'ADD_TO_SHOPIFY_CART',
                     variantId: '{variant_id}',
