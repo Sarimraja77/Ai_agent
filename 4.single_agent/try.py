@@ -212,6 +212,27 @@ st.markdown("""
         word-wrap: break-word;
         overflow-wrap: break-word;
         white-space: normal;
+        padding: 8px 10px;
+    }
+    .stChatMessage table th:nth-child(1),
+    .stChatMessage table td:nth-child(1) {
+        width: 6%;
+    }
+    .stChatMessage table th:nth-child(2),
+    .stChatMessage table td:nth-child(2) {
+        width: 48%;
+    }
+    .stChatMessage table th:nth-child(3),
+    .stChatMessage table td:nth-child(3) {
+        width: 16%;
+    }
+    .stChatMessage table th:nth-child(4),
+    .stChatMessage table td:nth-child(4) {
+        width: 14%;
+    }
+    .stChatMessage table th:nth-child(5),
+    .stChatMessage table td:nth-child(5) {
+        width: 16%;
     }
     }
     @media (max-width: 480px) {
