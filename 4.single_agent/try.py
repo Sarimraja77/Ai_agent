@@ -207,7 +207,6 @@ st.markdown("""
         display: block;
         overflow-x: auto;
         white-space: nowrap;
-        font-size: 12px;
         max-width: 100%;
     }
     @media (max-width: 480px) {
