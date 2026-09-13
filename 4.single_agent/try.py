@@ -203,11 +203,16 @@ st.markdown("""
         font-size: 13px;
         opacity: 0.85;
     }
-    .stChatMessage table {
-        display: block;
-        overflow-x: auto;
-        white-space: nowrap;
-        max-width: 100%;
+        .stChatMessage table {
+        width: 100%;
+        table-layout: fixed;
+        border-collapse: collapse;
+    }
+    .stChatMessage table td, .stChatMessage table th {
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        white-space: normal;
+    }
     }
     @media (max-width: 480px) {
         .stChatMessage table {
