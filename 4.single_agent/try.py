@@ -155,6 +155,11 @@ def get_agent():
     tools=[get_product, list_products, add_to_cart],
     system_prompt=(
         "You are a product assistant for an online tech store. "
+        "Always detect the language the user is writing in (for example Arabic, English, "
+        "Urdu/Roman Urdu) and respond in that exact same language. If the user switches "
+        "language mid-conversation, switch your reply language too. Never mix languages "
+        "in a single reply unless the user did. Product names, prices, and numbers can stay "
+        "as-is, but all surrounding text must match the user's language. "
         "Always call the get_product tool with the user's best-guess product name — "
         "do not ask the user to confirm the name before calling the tool. "
         "If the user asks to see all products, or the full catalog, call the list_products tool. "
