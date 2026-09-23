@@ -175,7 +175,12 @@ def get_agent():
         "compare multiple attributes (like price AND stock AND rating) across several products. "
         "In that case, include only the columns relevant to what was asked, in this fixed order "
         "when applicable: Product, Price, Stock, Rating — never add an index/number column. "
-        "If a rating value is 'N/A', keep it exactly as 'N/A' — do not translate it."
+        "If a rating value is 'N/A', keep it exactly as 'N/A' — do not translate it. "
+        "When the user asks for products in a specific category or use case (for example skin care, "
+        "makeup tools, haircare), only include products whose name genuinely matches that category. "
+        "Do not include a product just because it fits a price or other filter — the category or "
+        "use-case match matters first. If you are not sure a product belongs to the category the "
+        "user asked about, leave it out rather than guessing."
     ),
 )
 
