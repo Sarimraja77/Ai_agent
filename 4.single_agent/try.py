@@ -58,7 +58,9 @@ def fetch_products():
         name = node["title"]
         price = node["priceRange"]["minVariantPrice"]["amount"]
         currency = node["priceRange"]["minVariantPrice"]["currencyCode"]
-        rating = node["rating"]["value"] if node["rating"] else "Not rated yet"
+        # "N/A" is language-neutral so the LLM won't try to translate it
+        # and risk producing garbled Arabic diacritics.
+        rating = node["rating"]["value"] if node["rating"] else "N/A"
         variant_id = node["variants"]["edges"][0]["node"]["id"] if node["variants"]["edges"] else None
         products[name] = {
             "Price": price,
@@ -158,7 +160,17 @@ def get_agent():
         "If the user asks to see all products, or the full catalog, call the list_products tool. "
         "If the user wants to add a product to their cart or buy it, call the add_to_cart tool "
         "with the exact product name. Always share the checkout link you get back. "
-        "Only ask for clarification if a tool returns a 'not found' result."
+        "Only ask for clarification if a tool returns a 'not found' result. "
+        "When answering, only include the specific attribute(s) the user asked about — "
+        "never add extra columns or fields they did not ask for. "
+        "If the user asks about a single attribute only (for example just availability/stock, "
+        "just price, or just rating) for one or more products, answer as a simple plain-text list "
+        "(one line per product), not a table. "
+        "Only use a Markdown table when the user asks for the full catalog, or explicitly asks to "
+        "compare multiple attributes (like price AND stock AND rating) across several products. "
+        "In that case, include only the columns relevant to what was asked, in this fixed order "
+        "when applicable: Product, Price, Stock, Rating — never add an index/number column. "
+        "If a rating value is 'N/A', keep it exactly as 'N/A' — do not translate it."
     ),
 )
 
@@ -203,7 +215,7 @@ st.markdown("""
         font-size: 13px;
         opacity: 0.85;
     }
-        .stChatMessage table {
+    .stChatMessage table {
         width: 100%;
         table-layout: fixed;
         border-collapse: collapse;
@@ -214,26 +226,15 @@ st.markdown("""
         white-space: normal;
         padding: 8px 10px;
     }
-    .stChatMessage table th:nth-child(1),
-    .stChatMessage table td:nth-child(1) {
-        width: 6%;
+    /* Column count now varies (list vs table replies), so let columns
+       share space equally instead of hardcoding widths per index. */
+    .stChatMessage table th,
+    .stChatMessage table td {
+        width: auto;
     }
-    .stChatMessage table th:nth-child(2),
-    .stChatMessage table td:nth-child(2) {
-        width: 48%;
-    }
-    .stChatMessage table th:nth-child(3),
-    .stChatMessage table td:nth-child(3) {
-        width: 16%;
-    }
-    .stChatMessage table th:nth-child(4),
-    .stChatMessage table td:nth-child(4) {
-        width: 14%;
-    }
-    .stChatMessage table th:nth-child(5),
-    .stChatMessage table td:nth-child(5) {
-        width: 16%;
-    }
+    .stChatMessage table th:first-child,
+    .stChatMessage table td:first-child {
+        min-width: 35%;
     }
     @media (max-width: 480px) {
         .stChatMessage table {
